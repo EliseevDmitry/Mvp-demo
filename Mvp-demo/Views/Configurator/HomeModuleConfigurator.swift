@@ -14,7 +14,7 @@ class HomeModuleConfigurator {
         let productService = ProductService()
         
         let homePresenter = HomePresenter(service: productService)
-        
+
         let homeVC = HomeViewController(presenter: homePresenter)
         
         homePresenter.view = homeVC

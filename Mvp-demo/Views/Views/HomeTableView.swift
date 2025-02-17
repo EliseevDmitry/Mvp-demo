@@ -7,43 +7,40 @@
 
 import UIKit
 
-class HomeTableView: UITableView {
+protocol IHomeTableView {
+    func updateTable(_ products: [Product])
+}
+
+    class HomeTableView: UITableView, IHomeTableView {
    
     //let productTable: UITableView
-    var products: [Product]?
+    private var products: [Product]? = []
     
     override init(frame: CGRect, style: UITableView.Style) {
         super .init(frame: frame, style: style)
-        setupViews()
-        setupConstraints()
+        commonInit()  
+    }
+    
+    func commonInit(){
+        self.delegate = self
+        self.dataSource = self
+        self.register(ProductTableViewCell.self, forCellReuseIdentifier: "ProductCell")
+        self.backgroundColor = .cyan
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let homeTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(ProductTableViewCell.self, forCellReuseIdentifier: "ProductCell")
-        return tableView
-    }()
-    
-    
 }
 
 extension HomeTableView {
-    private func setupViews(){
-        [homeTableView].forEach {
-            addSubview($0)
-        }
-       
+    
+    func updateTable(_ products: [Product]){
+        self.products = products
+        self.reloadData()
     }
     
-    private func setupConstraints() {
-        homeTableView.snp.makeConstraints { make in
-            make.left.top.right.bottom.equalToSuperview()
-        }
-    }
 }
 
 extension HomeTableView: UITableViewDelegate, UITableViewDataSource {
@@ -53,8 +50,8 @@ extension HomeTableView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return  ProductTableViewCell()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ProductCell", for: indexPath) as? ProductTableViewCell else { return UITableViewCell() }
+        cell.update(products![indexPath.row])
+        return  cell
     }
-    
-    
 }

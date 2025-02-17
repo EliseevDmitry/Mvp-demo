@@ -17,6 +17,12 @@ class ProductTableViewCell: UITableViewCell {
         return $0
     }(UIView())
     
+    private lazy var nameLabel: UILabel = {
+        $0.text = "Test"
+        $0.textColor = .black
+        return $0
+    }(UILabel())
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
@@ -31,7 +37,7 @@ class ProductTableViewCell: UITableViewCell {
 
 extension ProductTableViewCell{
     private func setupViews(){
-        [containerView].forEach {
+        [containerView, nameLabel].forEach {
             contentView.addSubview($0)
         }
        
@@ -40,8 +46,15 @@ extension ProductTableViewCell{
     private func setupConstraints() {
         containerView.snp.makeConstraints { make in
             make.left.top.right.bottom.equalTo(contentView)
-            make.height.equalTo(100)
-            make.width.equalTo(300)
         }
+        
+        nameLabel.snp.makeConstraints { make in
+            make.left.right.top.bottom.equalToSuperview()
+            make.height.equalTo(40)
+        }
+    }
+    
+    func update(_ product: Product) {
+        nameLabel.text = "\(product.name) \(product.price)"
     }
 }

@@ -9,34 +9,29 @@ import Foundation
 
 //Presenter
 protocol IHomePresenter: AnyObject {
-    
+    var service: IProductService { get  set}
     //Event
     func viewDidLoad()
     func profileButtonDidTap()
-    func updateBackground()
-    func loadTable()
+    //func updateBackground()
 }
 
 class HomePresenter {
     
     weak var view: IHomeController?
     
-    private let service: ProductService
-    init(service: ProductService) {
+    var service: IProductService
+    init(service: IProductService) {
         self.service = service
     }
 }
 
 extension HomePresenter: IHomePresenter {
-    func loadTable() {
-        view?.loadTable()
-    }
-    
-    
+
     //тестовая функция
-    func updateBackground() {
-        view?.updateBackground()
-    }
+//    func updateBackground() {
+//        view?.updateBackground()
+//    }
     
     
     //Event

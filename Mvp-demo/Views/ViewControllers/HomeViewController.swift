@@ -10,23 +10,22 @@ import UIKit
 
 //View
 protocol IHomeController: AnyObject {
-    
-    //Update View
+    var homeTableView: HomeTableView { get set }
+    var products: [Product] { get }
     func update(_ products: [Product])
     func updateBackground()
-    func loadTable()
 }
 
 class HomeViewController: UIViewController {
+    var homeTableView = HomeTableView()
 
-    private var products: [Product] = []
-    //private var homeTableView = HomeTableView()
-    private var homeTableView = HomeTableView()
-   
+    var products: [Product]
+    let presenter: IHomePresenter
     
-    let presenter: HomePresenter
-    init(presenter: HomePresenter) {
+    init(presenter: IHomePresenter) {
         self.presenter = presenter
+        self.products = []
+      
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -36,9 +35,10 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupViews()
+        setupConstraint()
         presenter.viewDidLoad()
-        presenter.updateBackground()
-        presenter.loadTable()
+        //presenter.updateBackground()  
     }
     
     @objc func profileButtonDidTap() {
@@ -46,9 +46,27 @@ class HomeViewController: UIViewController {
     }
 }
 
+extension HomeViewController {
+    func setupViews() {
+        [homeTableView].forEach {
+            view.addSubview($0)
+        }
+    }
+    
+    func setupConstraint() {
+        homeTableView.snp.makeConstraints { make in
+            make.right.top.left.bottom.equalToSuperview()
+        }
+    }
+}
+
 extension HomeViewController: IHomeController {
-   
-    //
+
+//    func updateTableView() {
+//        homeTableView.products = products
+//    }
+    
+
     func updateBackground() {
         view.backgroundColor = .red
     }
@@ -56,14 +74,11 @@ extension HomeViewController: IHomeController {
    
     func update(_ products: [Product]) {
         self.products = products
-        homeTableView.reloadData()
+        
+        homeTableView.updateTable(products)
+        //homeTableView.reloadData()
     }
-    
-    func loadTable(){
-        view.addSubview(homeTableView)
-    }
-    
-    
+
 }
 
 
