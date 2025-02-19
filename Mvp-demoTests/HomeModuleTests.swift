@@ -13,7 +13,9 @@ import XCTest
 
 
 class HomeViewControllerSpy: IHomeController {
-    var homeTableView: Mvp_demo.HomeTableView
+    var homeTableView: any Mvp_demo.IHomeTableView
+    
+   // var homeTableView: Mvp_demo.HomeTableView
     
     
     var products: [Mvp_demo.Product] = []
@@ -39,12 +41,19 @@ class HomeViewControllerSpy: IHomeController {
 }
 
 class HomePresenterSpy: IHomePresenter {
+    
+    
     var service: IProductService
     required init(service: IProductService) {
         self.service = service
     }
     var viewIsLoadCalled = false
     var buttonDidTapCalled = false
+    var updateBackgroundCalled = false
+    
+    func updateBackground() {
+        var updateBackgroundCalled = true
+    }
     
     func viewDidLoad() {
         viewIsLoadCalled = true
@@ -65,7 +74,7 @@ class ProductServiceSpy: IProductService {
     }
 }
 
-class HomeTableViewSpy: IHomeTableView {
+class HomeTableViewSpy: UITableView, IHomeTableView {
     
     var tableUpdateCalled = false
     
@@ -80,8 +89,9 @@ final class HomeTests: XCTestCase{
     func testPresenterCallsViewDidLoad(){
         //given
         let serviceSpy = ProductServiceSpy()
+        let table = HomeTableViewSpy()
         let homePresenterSpy = HomePresenterSpy(service: serviceSpy)
-        let homeVC = HomeViewController(presenter: homePresenterSpy)
+        let homeVC = HomeViewController(presenter: homePresenterSpy, table: table)
         
         //when
         let _ = homeVC.view
@@ -93,11 +103,12 @@ final class HomeTests: XCTestCase{
     func testPresenterCallsProfileButtonDidTap(){
         //given
         let serviceSpy = ProductServiceSpy()
+        let table = HomeTableViewSpy()
         let homePresenterSpy = HomePresenterSpy(service: serviceSpy)
-        let homeVC = HomeViewController(presenter: homePresenterSpy)
+        let homeVC = HomeViewController(presenter: homePresenterSpy, table: table)
         
         //when
-        let _ = homeVC.presenter.profileButtonDidTap()
+        let _ = homeVC.profileButtonDidTap()
         
         //then
         XCTAssertTrue(homePresenterSpy.buttonDidTapCalled)
@@ -135,7 +146,7 @@ final class HomeTests: XCTestCase{
         
         //when
         
-        let _ = homePresenter.view?.updateBackground()
+        let _ = homePresenter.updateBackground()
         
         //then
         XCTAssertTrue(homeVCSpy.updateBackgroundCalled)
@@ -160,11 +171,12 @@ final class HomeTests: XCTestCase{
         
         let tableSpy = HomeTableViewSpy()
         let serviceSpy = ProductServiceSpy()
-        let homePresenterSpy = HomePresenterSpy(service: serviceSpy)
-        let homeVC = HomeViewController(presenter: homePresenterSpy)
+        let homePresenter = HomePresenter(service: serviceSpy)
+        let homeVC = HomeViewController(presenter: homePresenter, table: tableSpy)
+  
         
         //when
-        let _ = tableSpy.updateTable(homeVC.products)
+        let _ = homeVC.update(homeVC.products)
         
         //then
         XCTAssertTrue(tableSpy.tableUpdateCalled)

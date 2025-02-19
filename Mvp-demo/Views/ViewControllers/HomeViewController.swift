@@ -10,22 +10,22 @@ import UIKit
 
 //View
 protocol IHomeController: AnyObject {
-    var homeTableView: HomeTableView { get set }
+    var homeTableView: IHomeTableView { get set }
     var products: [Product] { get }
     func update(_ products: [Product])
     func updateBackground()
 }
 
 class HomeViewController: UIViewController {
-    var homeTableView = HomeTableView()
+    var homeTableView: IHomeTableView
 
     var products: [Product]
     let presenter: IHomePresenter
     
-    init(presenter: IHomePresenter) {
+    init(presenter: IHomePresenter, table: IHomeTableView) {
         self.presenter = presenter
         self.products = []
-      
+        self.homeTableView = table
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -38,7 +38,7 @@ class HomeViewController: UIViewController {
         setupViews()
         setupConstraint()
         presenter.viewDidLoad()
-        //presenter.updateBackground()  
+        presenter.updateBackground()
     }
     
     @objc func profileButtonDidTap() {
@@ -61,6 +61,7 @@ extension HomeViewController {
 }
 
 extension HomeViewController: IHomeController {
+    
 
 //    func updateTableView() {
 //        homeTableView.products = products

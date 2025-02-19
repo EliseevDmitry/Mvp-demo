@@ -13,7 +13,7 @@ protocol IHomePresenter: AnyObject {
     //Event
     func viewDidLoad()
     func profileButtonDidTap()
-    //func updateBackground()
+    func updateBackground()
 }
 
 class HomePresenter {
@@ -29,9 +29,9 @@ class HomePresenter {
 extension HomePresenter: IHomePresenter {
 
     //тестовая функция
-//    func updateBackground() {
-//        view?.updateBackground()
-//    }
+    func updateBackground() {
+        view?.updateBackground()
+    }
     
     
     //Event

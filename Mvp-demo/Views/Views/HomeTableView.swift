@@ -7,9 +7,11 @@
 
 import UIKit
 
-protocol IHomeTableView {
+protocol IHomeTableView where Self: UITableView {
     func updateTable(_ products: [Product])
 }
+
+
 
     class HomeTableView: UITableView, IHomeTableView {
    
